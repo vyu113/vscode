@@ -4910,31 +4910,7 @@ suite('autoClosingPairs', () => {
 		mode.dispose();
 	});
 
-	test('issue #53357: Over typing ignores characters after backslash', () => {
-		let mode = new AutoClosingMode();
-		usingCursor({
-			text: [
-				'console.log();'
-			],
-			languageIdentifier: mode.getLanguageIdentifier()
-		}, (model, cursor) => {
 
-			cursor.setSelections('test', [new Selection(1, 13, 1, 13)]);
-
-			cursorCommand(cursor, H.Type, { text: '\'' }, 'keyboard');
-			assert.equal(model.getValue(), 'console.log(\'\');');
-
-			cursorCommand(cursor, H.Type, { text: 'it' }, 'keyboard');
-			assert.equal(model.getValue(), 'console.log(\'it\');');
-
-			cursorCommand(cursor, H.Type, { text: '\\' }, 'keyboard');
-			assert.equal(model.getValue(), 'console.log(\'it\\\');');
-
-			cursorCommand(cursor, H.Type, { text: '\'' }, 'keyboard');
-			assert.equal(model.getValue(), 'console.log(\'it\\\'\'\');');
-		});
-		mode.dispose();
-	});
 
 	test('issue #84998: Overtyping Brackets doesn\'t work after backslash', () => {
 		let mode = new AutoClosingMode();
@@ -4965,31 +4941,7 @@ suite('autoClosingPairs', () => {
 		mode.dispose();
 	});
 
-	test('issue #2773: Accents (´`¨^, others?) are inserted in the wrong position (Mac)', () => {
-		let mode = new AutoClosingMode();
-		usingCursor({
-			text: [
-				'hello',
-				'world'
-			],
-			languageIdentifier: mode.getLanguageIdentifier()
-		}, (model, cursor) => {
-			assertCursor(cursor, new Position(1, 1));
 
-			// Typing ` and pressing shift+down on the mac US intl kb layout
-			// Here we're just replaying what the cursor gets
-			cursorCommand(cursor, H.CompositionStart, null, 'keyboard');
-			cursorCommand(cursor, H.Type, { text: '`' }, 'keyboard');
-			moveDown(cursor, true);
-			cursorCommand(cursor, H.ReplacePreviousChar, { replaceCharCnt: 1, text: '`' }, 'keyboard');
-			cursorCommand(cursor, H.ReplacePreviousChar, { replaceCharCnt: 1, text: '`' }, 'keyboard');
-			cursorCommand(cursor, H.CompositionEnd, null, 'keyboard');
-
-			assert.equal(model.getValue(), '`hello\nworld');
-			assertCursor(cursor, new Selection(1, 2, 2, 2));
-		});
-		mode.dispose();
-	});
 
 	test('issue #26820: auto close quotes when not used as accents', () => {
 		let mode = new AutoClosingMode();
