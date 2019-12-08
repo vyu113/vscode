@@ -452,7 +452,12 @@ export class TypeOperations {
 				return false;
 			}
 
-
+			// Do not over-type quotes after a backslash
+			const chIsQuote = isQuote(ch);
+			const beforeChar = position.column > 2 ? lineText.charCodeAt(position.column - 2) : CharCode.Null;
+			if (beforeChar === CharCode.Backslash && chIsQuote) {
+				return false;
+			}
 
 			// Must over-type a closing character typed by the editor
 			if (config.autoClosingOvertype === 'auto') {
